@@ -1,17 +1,19 @@
-
 from dataclasses import dataclass
 from enum import Enum
+
 
 class Severity(str, Enum):
     INFO = "INFO"
     WARNING = "WARNING"
     CRITICAL = "CRITICAL"
 
+
 @dataclass(frozen=True)
 class FileToReview:
     path: str
     content: str
     language: str
+
 
 @dataclass(frozen=True)
 class FileAnalysis:
@@ -21,9 +23,10 @@ class FileAnalysis:
     suggestions: list[str]
     severity: Severity
 
+
 @dataclass(frozen=True)
 class ReviewReport:
-    repo_name: str
-    branch: str
+    repository_name: str
+    branch_name: str
     files_analyzed: list[FileAnalysis]
     overall_summary: str

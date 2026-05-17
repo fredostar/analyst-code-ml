@@ -1,6 +1,13 @@
 from pathlib import Path
 
-from code_reviewer.domain.models import ReviewReport, FileAnalysis
+from code_reviewer.domain.models import FileAnalysis, ReviewReport, Severity
+
+_SEVERITY_ICONS: dict[Severity, str] = {
+    Severity.INFO: "ℹ️",
+    Severity.WARNING: "⚠️",
+    Severity.CRITICAL: "🔴",
+}
+
 
 class MarkdownReportWriter:
     """Génère un fichier .md structuré à partir du rapport de revue."""
@@ -18,12 +25,12 @@ class MarkdownReportWriter:
         for analysis in report.files_analyzed:
             lines.extend(_render_file_section(analysis))
 
-        content = "\n".join(lines)
-        Path(output_path).write_text(content, encoding="utf-8")
+        Path(output_path).write_text("\n".join(lines), encoding="utf-8")
         return output_path
 
+
 def _render_file_section(analysis: FileAnalysis) -> list[str]:
-    icon = {"INFO": "ℹ️", "WARNING": "⚠️", "CRITICAL": "🔴"}[analysis.severity.value]
+    icon = _SEVERITY_ICONS[analysis.severity]
     section = [
         f"## {icon} `{analysis.path}`",
         analysis.summary,
@@ -35,6 +42,6 @@ def _render_file_section(analysis: FileAnalysis) -> list[str]:
         section.append("")
     if analysis.suggestions:
         section.append("### Suggestions")
-        section.extend(f"- {s}" for s in analysis.suggestions)
+        section.extend(f"- {suggestion}" for suggestion in analysis.suggestions)
         section.append("")
     return section

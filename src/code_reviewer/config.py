@@ -1,4 +1,5 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
     github_token: str = ""
@@ -6,4 +7,4 @@ class Settings(BaseSettings):
     mistral_api_key: str = ""
     anthropic_api_key: str = ""
 
-    model_config = {"env_prefix": "CR_"}
+    model_config = SettingsConfigDict(env_prefix="CR_")

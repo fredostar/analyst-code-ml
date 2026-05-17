@@ -12,7 +12,7 @@ _SEVERITY_ICONS: dict[Severity, str] = {
 class MarkdownReportWriter:
     """Génère un fichier .md structuré à partir du rapport de revue."""
 
-    def write(self, report: ReviewReport, output_path: str) -> str:
+    def render(self, report: ReviewReport) -> str:
         lines = [
             f"# Revue de code — {report.repository_name}",
             f"**Branche** : `{report.branch_name}`  ",
@@ -24,8 +24,10 @@ class MarkdownReportWriter:
         ]
         for analysis in report.files_analyzed:
             lines.extend(_render_file_section(analysis))
+        return "\n".join(lines)
 
-        Path(output_path).write_text("\n".join(lines), encoding="utf-8")
+    def write(self, report: ReviewReport, output_path: str) -> str:
+        Path(output_path).write_text(self.render(report), encoding="utf-8")
         return output_path
 
 
